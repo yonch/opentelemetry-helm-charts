@@ -337,7 +337,7 @@ spec:
   triggers:
   - type: prometheus
     metadata:
-      serverAddress: http://prometheus:9090
+      serverAddress: http://prometheus.{{ .Release.Namespace }}.svc.cluster.local:9090
       metricName: {{ include "otel-demo.name" . }}-{{ .name }}-cpu-utilization
       # This query calculates the total CPU usage in cores across all pods.
       query: |
