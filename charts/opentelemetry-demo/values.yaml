@@ -448,6 +448,10 @@ components:
     enabled: true
     useDefault:
       env: true
+    keda:
+      # Users should consider scaling Locust _vertically_ using an env LOCUST_PROCESSES. Doing that 
+      # allows Locust to generate aggregate statistics and respect the configured total users and spawn rate.
+      maxReplicas: 1 # Disable horizontal scaling for Locust
     service:
       port: 8089
     env:
