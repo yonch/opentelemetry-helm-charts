@@ -44,7 +44,7 @@ default:
     cooldownPeriod: 30
     minReplicas: 1
     maxReplicas: 5
-    targetCPUUtilizationPercentage: 80
+    targetCPUMillicores: 80
 
 keda:
   install:

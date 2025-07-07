@@ -339,10 +339,10 @@ spec:
     metadata:
       serverAddress: http://prometheus:9090
       metricName: {{ include "otel-demo.name" . }}-{{ .name }}-cpu-utilization
-      # This query calculates the average CPU utilization as a percentage of the requested CPU.
+      # This query calculates the total CPU usage in cores across all pods.
       query: |
-        sum(rate(container_cpu_usage_seconds_total{container!="", pod=~"^{{ .name }}-[^-]+-[^-]+$"}[1m])) / sum(kube_pod_container_resource_requests{resource="cpu", pod=~"^{{ .name }}-[^-]+-[^-]+$"}) * 100
-      threshold: '{{ $componentKeda.targetCPUUtilizationPercentage | default $defaultKeda.targetCPUUtilizationPercentage | default 80 }}'
+        sum(rate(container_cpu_usage_seconds_total{container!="", pod=~"^{{ .name }}-[^-]+-[^-]+$"}[1m]))
+      threshold: '{{ divf ($componentKeda.targetCPUMillicores | default $defaultKeda.targetCPUMillicores | default 100.0) 1000.0 }}'
 {{- end }}
 {{- end }}
 

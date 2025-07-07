@@ -105,7 +105,7 @@ the demo
 | `default.keda.cooldownPeriod`          | Period to wait before scaling down (in seconds)                                           | `30`                                                 |
 | `default.keda.minReplicas`             | Minimum number of replicas                                                                | `1`                                                  |
 | `default.keda.maxReplicas`             | Maximum number of replicas                                                                | `5`                                                  |
-| `default.keda.targetCPUUtilizationPercentage` | Target CPU utilization percentage to trigger scaling                                  | `80`                                                 |
+| `default.keda.targetCPUMillicores`            | Target CPU usage in millicores to trigger scaling                                     | `80`                                                |
 | `serviceAccount.annotations`           | Annotations for the serviceAccount                                                        | `{}`                                                 |
 | `serviceAccount.create`                | Whether to create a serviceAccount or use an existing one                                 | `true`                                               |
 | `serviceAccount.name`                  | The name of the ServiceAccount to use for demo components                                 | `""`                                                 |
@@ -183,9 +183,9 @@ Parameters for each sub-chart can be specified within that sub-chart's
 respective top level. This chart will override some of the dependent sub-chart
 parameters by default. The overriden parameters are specified below.
 
-This chart can optionally use [KEDA](https://keda.sh/) (Kubernetes Event-driven Autoscaling) to automatically scale the demo components based on CPU utilization. When enabled via `default.keda.enabled: true` or on a per-component basis, a KEDA `ScaledObject` is created for each component.
+This chart can optionally use [KEDA](https://keda.sh/) (Kubernetes Event-driven Autoscaling) to automatically scale the demo components based on CPU usage in millicores. When enabled via `default.keda.enabled: true` or on a per-component basis, a KEDA `ScaledObject` is created for each component.
 
-For this to work, KEDA needs metrics from `kube-state-metrics`. If you enable KEDA, this chart automatically enables the `prometheus.kube-state-metrics` sub-chart.
+The scaling is based on average CPU usage per pod, measured directly from container metrics.
 
 #### OpenTelemetry Collector
 
