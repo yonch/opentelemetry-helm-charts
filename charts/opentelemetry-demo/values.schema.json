@@ -49,6 +49,9 @@
     },
     "opensearch": {
       "type": "object"
+    },
+    "keda": {
+      "type": "object"
     }
   },
   "required": [
@@ -215,6 +218,9 @@
         },
         "additionalVolumes": {
           "type": "array"
+        },
+        "keda": {
+          "type": "object"
         }
       },
       "required": [
@@ -292,6 +298,12 @@
           "type": "object"
         },
         "podSecurityContext": {
+          "type": "object"
+        },
+        "resources": {
+          "$ref": "#/definitions/ContainerResources"
+        },
+        "keda": {
           "type": "object"
         }
       },

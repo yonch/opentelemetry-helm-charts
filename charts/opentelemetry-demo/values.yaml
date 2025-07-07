@@ -35,6 +35,24 @@ default:
     tolerations: []
   # Default securityContext for all components
   securityContext: {}
+  resources:
+    requests:
+      cpu: 100m
+  keda:
+    enabled: false
+    pollingInterval: 5
+    cooldownPeriod: 30
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80
+
+keda:
+  install:
+    enabled: true
+    # Values to pass to the KEDA subchart can be placed here.
+    # For example:
+    # extraArgs:
+    #   v: "1"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -866,7 +884,7 @@ prometheus:
       servicePort: 9090
     resources:
       limits:
-        memory: 300Mi
+        memory: 1000Mi
 
 grafana:
   enabled: true

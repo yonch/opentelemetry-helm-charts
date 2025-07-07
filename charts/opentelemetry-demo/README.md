@@ -99,6 +99,13 @@ the demo
 | `default.schedulingRules.affinity`     | Man of node/pod affinities                                                                | `{}`                                                 |
 | `default.schedulingRules.tolerations`  | Tolerations for pod assignment                                                            | `[]`                                                 |
 | `default.securityContext`              | Demo components container security context                                                | `{}`                                                 |
+| `default.resources`                    | Default CPU/Memory resource requests/limits for all components                            | `{ requests: { cpu: 100m } }`                         |
+| `default.keda.enabled`                 | Enable KEDA autoscaling for all components by default                                     | `false`                                              |
+| `default.keda.pollingInterval`         | How often KEDA queries Prometheus (in seconds)                                            | `5`                                                  |
+| `default.keda.cooldownPeriod`          | Period to wait before scaling down (in seconds)                                           | `30`                                                 |
+| `default.keda.minReplicas`             | Minimum number of replicas                                                                | `1`                                                  |
+| `default.keda.maxReplicas`             | Maximum number of replicas                                                                | `5`                                                  |
+| `default.keda.targetCPUUtilizationPercentage` | Target CPU utilization percentage to trigger scaling                                  | `80`                                                 |
 | `serviceAccount.annotations`           | Annotations for the serviceAccount                                                        | `{}`                                                 |
 | `serviceAccount.create`                | Whether to create a serviceAccount or use an existing one                                 | `true`                                               |
 | `serviceAccount.name`                  | The name of the ServiceAccount to use for demo components                                 | `""`                                                 |
@@ -132,6 +139,7 @@ component.
 | `envOverrides`                         | Used to override individual environment variables without re-specifying the entire array                   | `[]`                                                          |
 | `replicas`                             | Number of replicas for this component                                                                      | `1` for kafka, and redis ; `nil` otherwise       |
 | `resources`                            | CPU/Memory resource requests/limits                                                                        | Each component will have a default memory limit set           |
+| `keda`                                 | KEDA autoscaling configuration for this component. Overrides settings from `default.keda`.                 | `{}`                                                          |
 | `schedulingRules.nodeSelector`         | Node labels for pod assignment                                                                             | `{}`                                                          |
 | `schedulingRules.affinity`             | Man of node/pod affinities                                                                                 | `{}`                                                          |
 | `schedulingRules.tolerations`          | Tolerations for pod assignment                                                                             | `[]`                                                          |
@@ -163,16 +171,21 @@ component.
 
 ### Sub-charts
 
-The OpenTelemetry Demo Helm chart depends on 5 sub-charts:
+The OpenTelemetry Demo Helm chart depends on the following sub-charts:
 * OpenTelemetry Collector
 * Jaeger
 * Prometheus
 * Grafana
 * OpenSearch
+* KEDA (optional, for autoscaling)
 
 Parameters for each sub-chart can be specified within that sub-chart's
 respective top level. This chart will override some of the dependent sub-chart
 parameters by default. The overriden parameters are specified below.
+
+This chart can optionally use [KEDA](https://keda.sh/) (Kubernetes Event-driven Autoscaling) to automatically scale the demo components based on CPU utilization. When enabled via `default.keda.enabled: true` or on a per-component basis, a KEDA `ScaledObject` is created for each component.
+
+For this to work, KEDA needs metrics from `kube-state-metrics`. If you enable KEDA, this chart automatically enables the `prometheus.kube-state-metrics` sub-chart.
 
 #### OpenTelemetry Collector
 
@@ -257,3 +270,11 @@ parameters by default. The overriden parameters are specified below.
 | `opensearchJavaOpts`  | Java options for OpenSearch JVM                   | `-Xms300m -Xmx300m`                      |
 | `persistence.enabled` | Enable persistent storage for OpenSearch data     | `false`                                  |
 | `extraEnvs`           | Additional environment variables for OpenSearch   | Disables demo config and security plugin |
+
+#### KEDA
+> **Note**
+> The following parameters have a `keda.` prefix.
+
+| Parameter             | Description                                       | Default                                  |
+|-----------------------|---------------------------------------------------|------------------------------------------|
+| `install.enabled`     | Install the KEDA sub-chart                        | `true`                                   |
