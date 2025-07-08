@@ -341,7 +341,7 @@ spec:
       metricName: {{ include "otel-demo.name" . }}-{{ .name }}-cpu-utilization
       # This query calculates the total CPU usage in cores across all pods.
       query: |
-        sum(rate(container_cpu_usage_seconds_total{container!="", pod=~"^{{ .name }}-[^-]+-[^-]+$"}[1m]))
+        sum(rate(container_cpu_usage_seconds_total{container!="", pod=~"^{{ .name }}-[^-]+-[^-]+$"}[25s]))
       threshold: '{{ divf ($componentKeda.targetCPUMillicores | default $defaultKeda.targetCPUMillicores | default 100.0) 1000.0 }}'
   {{- /* Merge advanced settings - component-specific takes precedence over default */ -}}
   {{- $mergedAdvanced := $defaultKeda.advanced }}
