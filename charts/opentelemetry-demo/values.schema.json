@@ -220,7 +220,7 @@
           "type": "array"
         },
         "keda": {
-          "type": "object"
+          "$ref": "#/definitions/KedaConfig"
         }
       },
       "required": [
@@ -304,7 +304,7 @@
           "$ref": "#/definitions/ContainerResources"
         },
         "keda": {
-          "type": "object"
+          "$ref": "#/definitions/KedaConfig"
         }
       },
       "required": [
@@ -313,6 +313,19 @@
         "securityContext"
       ],
       "title": "Default"
+    },
+    "KedaConfig": {
+      "type": "object",
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "pollingInterval": {"type": "number"},
+        "cooldownPeriod": {"type": "number"},
+        "minReplicas": {"type": "number"},
+        "maxReplicas": {"type": "number"},
+        "targetCPUMillicores": {"type": "number"},
+        "advanced": {"type": "object"}
+      },
+      "title": "KedaConfig"
     },
     "ConfigMapKeyRef": {
       "type": "object",

@@ -343,6 +343,15 @@ spec:
       query: |
         sum(rate(container_cpu_usage_seconds_total{container!="", pod=~"^{{ .name }}-[^-]+-[^-]+$"}[1m]))
       threshold: '{{ divf ($componentKeda.targetCPUMillicores | default $defaultKeda.targetCPUMillicores | default 100.0) 1000.0 }}'
+  {{- /* Merge advanced settings - component-specific takes precedence over default */ -}}
+  {{- $mergedAdvanced := $defaultKeda.advanced }}
+  {{- if $componentKeda.advanced }}
+  {{- $mergedAdvanced = mergeOverwrite $defaultKeda.advanced $componentKeda.advanced }}
+  {{- end }}
+  {{- if $mergedAdvanced }}
+  advanced:
+    {{- $mergedAdvanced | toYaml | nindent 4 }}
+  {{- end }}
 {{- end }}
 {{- end }}
 

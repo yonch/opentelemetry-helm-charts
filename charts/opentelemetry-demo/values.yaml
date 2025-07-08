@@ -45,6 +45,9 @@ default:
     minReplicas: 1
     maxReplicas: 5
     targetCPUMillicores: 80
+    # Advanced KEDA configuration - any valid ScaledObject spec fields
+    # These will be merged into the ScaledObject spec
+    advanced: {}
 
 keda:
   install:
